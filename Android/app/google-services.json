@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "362389596985",
+    "firebase_url": "https://fir-tocrm.firebaseio.com",
+    "project_id": "fir-tocrm",
+    "storage_bucket": "fir-tocrm.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:362389596985:android:f184bf674ec64f9f",
+        "android_client_info": {
+          "package_name": "com.malamteam.firebasetocrm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "362389596985-974t7c0ei7j962sh5fvafi2j9o4ddtqm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.malamteam.firebasetocrm",
+            "certificate_hash": "362e42b6c98c3855ffe78afb7842ad8dcdbf7f49"
+          }
+        },
+        {
+          "client_id": "362389596985-3iukg3fcksnkbm7j1taqa0f6n07u8odb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHGBYb2J_6oFmS_JCEhLtr1inAkxL67yU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "362389596985-3iukg3fcksnkbm7j1taqa0f6n07u8odb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
