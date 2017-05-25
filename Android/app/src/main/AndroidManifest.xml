@@ -10,7 +10,10 @@
         android:theme="@style/AppTheme">
         <uses-permission android:name="android.permission.INTERNET"/>
         <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+        <!-- Used only for testing purposes, not required for Firebase Storage -->
 
+        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+        <activity android:name=".UploadActivity" />
         <activity android:name=".NewPostActivity" />
 
         <activity

@@ -3,4 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.malamteam.firebasetocrm.MainActivity">
     <item android:title="@string/menu_logout" app:showAsAction="never" android:visible="true" android:id="@+id/action_logout"/>
+    <item android:title="@string/take_photo_prompt" app:showAsAction="never" android:visible="true" android:id="@+id/action_take_photo_prompt"/>
+
 </menu>
