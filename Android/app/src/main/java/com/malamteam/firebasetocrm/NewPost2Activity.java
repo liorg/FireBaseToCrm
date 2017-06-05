@@ -54,6 +54,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.malamteam.firebasetocrm.models.Post;
 import com.malamteam.firebasetocrm.models.User;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -70,6 +71,10 @@ public class NewPost2Activity extends BaseActivity  implements OnMapReadyCallbac
 
     private EditText mTitleField;
     private EditText mBodyField;
+
+    private EditText mLat;
+    private EditText mLang;
+
     private FloatingActionButton mSubmitButton;
     GoogleMap mGoogleMap;
     SupportMapFragment mapFrag;
@@ -90,12 +95,16 @@ public class NewPost2Activity extends BaseActivity  implements OnMapReadyCallbac
 
         mTitleField = (EditText) findViewById(R.id.field_title2);
         mBodyField = (EditText) findViewById(R.id.field_body2);
+        mLat = (EditText) findViewById(R.id.field_lat2);
+        mLang = (EditText) findViewById(R.id.field_lang2);
+
         mSubmitButton = (FloatingActionButton) findViewById(R.id.fab_submit_post2);
 
         mSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 submitPost();
+
             }
         });
 
@@ -122,7 +131,8 @@ public class NewPost2Activity extends BaseActivity  implements OnMapReadyCallbac
     {
         mGoogleMap=googleMap;
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
+        mGoogleMap.setMyLocationEnabled(true);
+        MarkerOptions markerOptions = new MarkerOptions();
         //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ActivityCompat.checkSelfPermission(this,
@@ -140,6 +150,22 @@ public class NewPost2Activity extends BaseActivity  implements OnMapReadyCallbac
             buildGoogleApiClient();
             mGoogleMap.setMyLocationEnabled(true);
         }
+        mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng point) {
+               // https://stackoverflow.com/questions/14074129/google-maps-v2-set-both-my-location-and-zoom-in
+                mGoogleMap.clear();
+                MarkerOptions markerOptions = new MarkerOptions();
+                markerOptions.position(point);
+                markerOptions.title("Outlet Location");
+                mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(point));
+                mGoogleMap.addMarker(markerOptions);
+                mLat.setText( String.valueOf(point.latitude));
+                mLang.setText( String.valueOf(point.longitude));
+
+            }
+        });
+
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -187,21 +213,14 @@ public class NewPost2Activity extends BaseActivity  implements OnMapReadyCallbac
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
+        mLat.setText( String.valueOf(latitude));
+        mLang.setText( String.valueOf(longitude));
+
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
         mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
 
         //move map camera
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,11));
-
-
-
-        TextView tvLocation = (TextView) findViewById(R.id.tv_location2);
-
-        // Setting latitude and longitude in the TextView tv_location
-        tvLocation.setText("Latitude:" +  latitude  + ", Longitude:"+ longitude );
-
-
-
 
     }
 
@@ -350,8 +369,11 @@ public class NewPost2Activity extends BaseActivity  implements OnMapReadyCallbac
         // Create new post at /user-posts/$userid/$postid and at
         // /posts/$postid simultaneously
         String key = mDatabase.child("posts").push().getKey();
-        Post post = new Post(userId, username, title, body);
-        Map<String, Object> postValues = post.toMap();
+        double lat= Double.parseDouble(mLat.getText().toString());
+        double lang= Double.parseDouble(mLang.getText().toString());
+        Post post = new Post(userId, username, title,
+                body,lat,lang,new Date(),new Date(),new Date());
+        Map<String, Object> postValues = post.toMap2();
 
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/posts/" + key, postValues);

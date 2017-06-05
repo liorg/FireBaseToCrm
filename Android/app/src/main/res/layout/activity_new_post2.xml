@@ -17,14 +17,36 @@
         android:maxLines="1" />
 
     <EditText
+        android:id="@+id/field_lat2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dip"
+        android:layout_marginLeft="16dp"
+        android:layout_below="@+id/field_title2"
+        android:layout_alignParentLeft="true"
+        android:hint="lat"
+        android:maxLines="1" />
+    <EditText
+        android:id="@+id/field_lang2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dip"
+        android:layout_marginRight="16dp"
+        android:layout_below="@+id/field_title2"
+        android:layout_toRightOf="@+id/field_lat2"
+        android:gravity="right"
+        android:hint="lang"
+        android:maxLines="1" />
+    <EditText
         android:id="@+id/field_body2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/field_title2"
+        android:layout_below="@+id/field_lat2"
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="5dp"
+
         android:hint="Write your post..."
         android:inputType="textMultiLine"
         android:maxLines="10"
