@@ -1,5 +1,15 @@
 package com.malamteam.firebasetocrm;
 
+import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.EditText;
+
+
 import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -36,12 +46,31 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-public class MapLocationActivity extends BaseActivity
-        implements OnMapReadyCallback,
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.malamteam.firebasetocrm.models.Post;
+import com.malamteam.firebasetocrm.models.User;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class NewPost2Activity extends BaseActivity  implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
+    private static final String TAG = "NewPostActivity";
+    private static final String REQUIRED = "Required";
 
+    // [START declare_database_ref]
+    private DatabaseReference mDatabase;
+    // [END declare_database_ref]
+
+    private EditText mTitleField;
+    private EditText mBodyField;
+    private FloatingActionButton mSubmitButton;
     GoogleMap mGoogleMap;
     SupportMapFragment mapFrag;
     LocationRequest mLocationRequest;
@@ -50,16 +79,33 @@ public class MapLocationActivity extends BaseActivity
     Marker mCurrLocationMarker;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_map_location);
+        setContentView(R.layout.activity_new_post2);
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
+        // [START initialize_database_ref]
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        // [END initialize_database_ref]
 
-        getSupportActionBar().setTitle("Map Location Activity");
+        mTitleField = (EditText) findViewById(R.id.field_title2);
+        mBodyField = (EditText) findViewById(R.id.field_body2);
+        mSubmitButton = (FloatingActionButton) findViewById(R.id.fab_submit_post2);
 
-        mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mSubmitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                submitPost();
+            }
+        });
+
+
+        mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map2);
         mapFrag.getMapAsync(this);
+
+    //    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
+
 
     @Override
     public void onPause() {
@@ -131,9 +177,13 @@ public class MapLocationActivity extends BaseActivity
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
         }
+        // Getting latitude of the current location
+        double latitude = location.getLatitude();
 
+        // Getting longitude of the current location
+        double longitude = location.getLongitude();
         //Place current location marker
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        LatLng latLng = new LatLng(latitude, longitude);
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
@@ -142,6 +192,16 @@ public class MapLocationActivity extends BaseActivity
 
         //move map camera
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,11));
+
+
+
+        TextView tvLocation = (TextView) findViewById(R.id.tv_location2);
+
+        // Setting latitude and longitude in the TextView tv_location
+        tvLocation.setText("Latitude:" +  latitude  + ", Longitude:"+ longitude );
+
+
+
 
     }
 
@@ -164,7 +224,7 @@ public class MapLocationActivity extends BaseActivity
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 //Prompt the user once explanation has been shown
-                                ActivityCompat.requestPermissions(MapLocationActivity.this,
+                                ActivityCompat.requestPermissions(NewPost2Activity.this,
                                         new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                                         MY_PERMISSIONS_REQUEST_LOCATION );
                             }
@@ -216,4 +276,88 @@ public class MapLocationActivity extends BaseActivity
             // permissions this app might request
         }
     }
+
+    protected void submitPost() {
+        final String title = mTitleField.getText().toString();
+        final String body = mBodyField.getText().toString();
+
+        // Title is required
+        if (TextUtils.isEmpty(title)) {
+            mTitleField.setError(REQUIRED);
+            return;
+        }
+
+        // Body is required
+        if (TextUtils.isEmpty(body)) {
+            mBodyField.setError(REQUIRED);
+            return;
+        }
+
+        // Disable button so there are no multi-posts
+        setEditingEnabled(false);
+        Toast.makeText(this, "Posting...", Toast.LENGTH_SHORT).show();
+
+        // [START single_value_read]
+        final String userId = getUid();
+        mDatabase.child("users").child(userId).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // Get user value
+                        User user = dataSnapshot.getValue(User.class);
+
+                        // [START_EXCLUDE]
+                        if (user == null) {
+                            // User is null, error out
+                            Log.e(TAG, "User " + userId + " is unexpectedly null");
+                            Toast.makeText(NewPost2Activity.this,
+                                    "Error: could not fetch user.",
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Write new post
+                            writeNewPost(userId, user.username, title, body);
+                        }
+
+                        // Finish this Activity, back to the stream
+                        setEditingEnabled(true);
+                        finish();
+                        // [END_EXCLUDE]
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w(TAG, "getUser:onCancelled", databaseError.toException());
+                        // [START_EXCLUDE]
+                        setEditingEnabled(true);
+                        // [END_EXCLUDE]
+                    }
+                });
+        // [END single_value_read]
+    }
+
+    protected void setEditingEnabled(boolean enabled) {
+        mTitleField.setEnabled(enabled);
+        mBodyField.setEnabled(enabled);
+        if (enabled) {
+            mSubmitButton.setVisibility(View.VISIBLE);
+        } else {
+            mSubmitButton.setVisibility(View.GONE);
+        }
+    }
+
+    // [START write_fan_out]
+    protected void writeNewPost(String userId, String username, String title, String body) {
+        // Create new post at /user-posts/$userid/$postid and at
+        // /posts/$postid simultaneously
+        String key = mDatabase.child("posts").push().getKey();
+        Post post = new Post(userId, username, title, body);
+        Map<String, Object> postValues = post.toMap();
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/posts/" + key, postValues);
+        childUpdates.put("/user-posts/" + userId + "/" + key, postValues);
+
+        mDatabase.updateChildren(childUpdates);
+    }
+
 }

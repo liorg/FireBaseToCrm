@@ -53,7 +53,8 @@ public class NewPostActivity extends BaseActivity {
         });
     }
 
-    private void submitPost() {
+
+    protected void submitPost() {
         final String title = mTitleField.getText().toString();
         final String body = mBodyField.getText().toString();
 
@@ -111,7 +112,7 @@ public class NewPostActivity extends BaseActivity {
         // [END single_value_read]
     }
 
-    private void setEditingEnabled(boolean enabled) {
+    protected void setEditingEnabled(boolean enabled) {
         mTitleField.setEnabled(enabled);
         mBodyField.setEnabled(enabled);
         if (enabled) {
@@ -122,7 +123,7 @@ public class NewPostActivity extends BaseActivity {
     }
 
     // [START write_fan_out]
-    private void writeNewPost(String userId, String username, String title, String body) {
+    protected void writeNewPost(String userId, String username, String title, String body) {
         // Create new post at /user-posts/$userid/$postid and at
         // /posts/$postid simultaneously
         String key = mDatabase.child("posts").push().getKey();

@@ -109,7 +109,7 @@ public class MainActivity extends BaseActivity {
             findViewById(R.id.fab_new_post).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(new Intent(MainActivity.this, NewPostActivity.class));
+                    startActivity(new Intent(MainActivity.this, NewPost2Activity.class));
                 }
         });
     }
@@ -146,6 +146,11 @@ public class MainActivity extends BaseActivity {
         }
         else if(i==R.id.action_take_photo_prompt) {
             startActivity(new Intent(this, UploadActivity.class));
+            finish();
+            return true;
+        }
+        else  if(i==R.id.action_mapcurrentlocation) {
+            startActivity(new Intent(this, MapLocationActivity.class));
             finish();
             return true;
         }
