@@ -101,7 +101,7 @@ public class UpdatePost2Activity extends BaseActivity  implements OnMapReadyCall
         mPostReference = FirebaseDatabase.getInstance().getReference()
                 .child("posts").child(mPostKey);
 
-
+        mPostReference.keepSynced(true);
     //    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -122,7 +122,7 @@ public class UpdatePost2Activity extends BaseActivity  implements OnMapReadyCall
                 mTitleField.setText(post.title);
                 mBodyField.setText(post.body);
                 mLat.setText(String.valueOf(post.latitude));
-                mLang.setText(String.valueOf(post.latitude));
+                mLang.setText(String.valueOf(post.longitude));
                 double lat= Double.parseDouble(mLat.getText().toString());
                 double lang= Double.parseDouble(mLang.getText().toString());
                 LatLng point=new LatLng(lat,lang);

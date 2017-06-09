@@ -9,11 +9,16 @@ import android.support.multidex.MultiDexApplication;
 import android.app.Application;
 import android.content.Context;
 import android.support.*;
+
+import com.google.firebase.database.FirebaseDatabase;
+
 public class MyApplication extends MultiDexApplication {
 
     @Override
     public void onCreate() {
         super.onCreate();
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
         //mas codigo
     }
 

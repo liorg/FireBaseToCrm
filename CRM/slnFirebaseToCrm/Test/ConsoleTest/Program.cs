@@ -40,7 +40,7 @@ namespace ConsoleTest
             var ddd=auth.FirebaseToken;
             var ddddd=ap.GetUserAsync(ddd).Result;
 
-
+           
 
             var firebase = new FirebaseClient(
                          "https://fir-tocrm.firebaseio.com",
@@ -53,7 +53,7 @@ namespace ConsoleTest
             var dinos = firebase
               .Child("posts")
               .OnceAsync<PostDetail>().Result;
-
+           
             foreach (var dino in dinos)
             {
                 Console.WriteLine($"{dino.Key} is {dino.Object.author }m high.");

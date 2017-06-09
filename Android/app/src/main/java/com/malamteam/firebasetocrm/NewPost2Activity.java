@@ -92,7 +92,7 @@ public class NewPost2Activity extends BaseActivity  implements OnMapReadyCallbac
         // [START initialize_database_ref]
         mDatabase = FirebaseDatabase.getInstance().getReference();
         // [END initialize_database_ref]
-
+        mDatabase.keepSynced(true);
         mTitleField = (EditText) findViewById(R.id.field_title2);
         mBodyField = (EditText) findViewById(R.id.field_body2);
         mLat = (EditText) findViewById(R.id.field_lat2);
