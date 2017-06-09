@@ -17,7 +17,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
-public class MapTestActivity extends FragmentActivity implements LocationListener, OnMapReadyCallback {
+public class MapTestActivity extends FragmentActivity
+		implements LocationListener, OnMapReadyCallback {
 
 	GoogleMap googleMap;
 

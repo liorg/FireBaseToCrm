@@ -26,7 +26,8 @@ import com.malamteam.firebasetocrm.models.Post;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PostDetailActivity extends BaseActivity implements View.OnClickListener {
+public class PostDetailActivity extends BaseActivity implements
+        View.OnClickListener {
 
     private static final String TAG = "PostDetailActivity";
 

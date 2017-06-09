@@ -1,29 +1,18 @@
 package com.malamteam.firebasetocrm;
 
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-
-
-import android.os.Build;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.content.DialogInterface;
-
-import android.os.Bundle;
-
 import android.widget.Toast;
-
-import android.content.pm.PackageManager;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
-import android.view.Menu;
-import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -38,14 +27,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import android.content.Intent;
-import android.content.IntentSender;
-import android.location.Location;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -58,17 +39,17 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class NewPost2Activity extends BaseActivity  implements OnMapReadyCallback,
+public class UpdatePost2Activity extends BaseActivity  implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
-    private static final String TAG = "NewPostActivity";
+    private static final String TAG = "UpdatePostActivity";
     private static final String REQUIRED = "Required";
-
+    public static final String EXTRA_POST_KEY = "post_key";
     // [START declare_database_ref]
     private DatabaseReference mDatabase;
     // [END declare_database_ref]
-
+    private String mPostKey;
     private EditText mTitleField;
     private EditText mBodyField;
 
@@ -82,23 +63,24 @@ public class NewPost2Activity extends BaseActivity  implements OnMapReadyCallbac
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     Marker mCurrLocationMarker;
-
+    private DatabaseReference mPostReference;
+    private ValueEventListener mPostListener;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_post2);
+        setContentView(R.layout.activity_update_post2);
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
         // [START initialize_database_ref]
         mDatabase = FirebaseDatabase.getInstance().getReference();
         // [END initialize_database_ref]
 
-        mTitleField = (EditText) findViewById(R.id.field_title2);
-        mBodyField = (EditText) findViewById(R.id.field_body2);
-        mLat = (EditText) findViewById(R.id.field_lat2);
-        mLang = (EditText) findViewById(R.id.field_lang2);
+        mTitleField = (EditText) findViewById(R.id.field_titleu2);
+        mBodyField = (EditText) findViewById(R.id.field_bodyu2);
+        mLat = (EditText) findViewById(R.id.field_latu2);
+        mLang = (EditText) findViewById(R.id.field_langu2);
 
-        mSubmitButton = (FloatingActionButton) findViewById(R.id.fab_submit_post2);
+        mSubmitButton = (FloatingActionButton) findViewById(R.id.fab_submit_postu2);
 
         mSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,14 +90,88 @@ public class NewPost2Activity extends BaseActivity  implements OnMapReadyCallbac
             }
         });
 
-
-        mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map2);
+        mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapu2);
         mapFrag.getMapAsync(this);
+        mPostKey = getIntent().getStringExtra(EXTRA_POST_KEY);
+        if (mPostKey == null) {
+            throw new IllegalArgumentException("Must pass EXTRA_POST_KEY");
+        }
+
+        // Initialize Database
+        mPostReference = FirebaseDatabase.getInstance().getReference()
+                .child("posts").child(mPostKey);
+
 
     //    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    public void onStart() {
+        super.onStart();
 
+        // Add value event listener to the post
+        // [START post_value_event_listener]
+        ValueEventListener postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Get Post object and use the values to update the UI
+                Post post = dataSnapshot.getValue(Post.class);
+              //  boolean connected = dataSnapshot.getValue(Boolean.class);
+                // [START_EXCLUDE]
+               // mAuthorView.setText(post.author);
+                MarkerOptions markerOptions = new MarkerOptions();
+                mTitleField.setText(post.title);
+                mBodyField.setText(post.body);
+                mLat.setText(String.valueOf(post.latitude));
+                mLang.setText(String.valueOf(post.latitude));
+                double lat= Double.parseDouble(mLat.getText().toString());
+                double lang= Double.parseDouble(mLang.getText().toString());
+                LatLng point=new LatLng(lat,lang);
+
+                mGoogleMap.clear();
+                markerOptions.position(point);
+                markerOptions.title("Outlet Location");
+                mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(point));
+                mGoogleMap.addMarker(markerOptions);
+                //move map camera
+                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point,11));
+               // Toast.makeText(UpdatePost2Activity.this,
+                 //       "is connected="+connected,
+                   //     Toast.LENGTH_SHORT).show();
+                // [END_EXCLUDE]
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                // [START_EXCLUDE]
+                Toast.makeText(UpdatePost2Activity.this, "Failed to load post.",
+                        Toast.LENGTH_SHORT).show();
+                // [END_EXCLUDE]
+            }
+        };
+        mPostReference.addValueEventListener(postListener);
+        // [END post_value_event_listener]
+
+        // Keep copy of post listener so we can remove it when app stops
+        mPostListener = postListener;
+
+        // Listen for comments
+     //   mAdapter = new PostDetailActivity.CommentAdapter(this, mCommentsReference);
+     //   mCommentsRecycler.setAdapter(mAdapter);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // Remove post value event listener
+        if (mPostListener != null) {
+            mPostReference.removeEventListener(mPostListener);
+        }
+
+
+    }
     @Override
     public void onPause() {
         super.onPause();
@@ -132,9 +188,10 @@ public class NewPost2Activity extends BaseActivity  implements OnMapReadyCallbac
         mGoogleMap=googleMap;
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mGoogleMap.setMyLocationEnabled(true);
+
         MarkerOptions markerOptions = new MarkerOptions();
         //Initialize Google Play Services
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ActivityCompat.checkSelfPermission(this,
                     android.Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
@@ -148,21 +205,19 @@ public class NewPost2Activity extends BaseActivity  implements OnMapReadyCallbac
         }
         else {
             buildGoogleApiClient();
+            mGoogleMap.setMyLocationEnabled(true);
         }
+
         mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng point) {
                // https://stackoverflow.com/questions/14074129/google-maps-v2-set-both-my-location-and-zoom-in
-               // mGoogleMap.clear();
-                if (mCurrLocationMarker != null) {
-                    mCurrLocationMarker.remove();
-                }
+                mGoogleMap.clear();
                 MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.position(point);
                 markerOptions.title("Outlet Location");
                 mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(point));
-                mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
-
+                mGoogleMap.addMarker(markerOptions);
                 mLat.setText( String.valueOf(point.latitude));
                 mLang.setText( String.valueOf(point.longitude));
 
@@ -203,9 +258,9 @@ public class NewPost2Activity extends BaseActivity  implements OnMapReadyCallbac
     public void onLocationChanged(Location location)
     {
         mLastLocation = location;
+
         if (mCurrLocationMarker != null) {
-            return;
-          //  mCurrLocationMarker.remove();
+            mCurrLocationMarker.remove();
         }
         // Getting latitude of the current location
         double latitude = location.getLatitude();
@@ -216,7 +271,7 @@ public class NewPost2Activity extends BaseActivity  implements OnMapReadyCallbac
         LatLng latLng = new LatLng(latitude, longitude);
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
-        markerOptions.title("Current Position");
+        markerOptions.title("xx Position");
         mLat.setText( String.valueOf(latitude));
         mLang.setText( String.valueOf(longitude));
 
@@ -247,7 +302,7 @@ public class NewPost2Activity extends BaseActivity  implements OnMapReadyCallbac
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 //Prompt the user once explanation has been shown
-                                ActivityCompat.requestPermissions(NewPost2Activity.this,
+                                ActivityCompat.requestPermissions(UpdatePost2Activity.this,
                                         new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                                         MY_PERMISSIONS_REQUEST_LOCATION );
                             }
@@ -267,7 +322,8 @@ public class NewPost2Activity extends BaseActivity  implements OnMapReadyCallbac
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           String permissions[],
+                                           int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_LOCATION: {
                 // If request is cancelled, the result arrays are empty.
@@ -328,20 +384,17 @@ public class NewPost2Activity extends BaseActivity  implements OnMapReadyCallbac
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         // Get user value
                         User user = dataSnapshot.getValue(User.class);
-                        //boolean connected = dataSnapshot.getValue(Boolean.class);
+
                         // [START_EXCLUDE]
                         if (user == null) {
                             // User is null, error out
                             Log.e(TAG, "User " + userId + " is unexpectedly null");
-                            Toast.makeText(NewPost2Activity.this,
+                            Toast.makeText(UpdatePost2Activity.this,
                                     "Error: could not fetch user.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             // Write new post
-                            writeNewPost(userId, user.username, title, body);
-                            //Toast.makeText(NewPost2Activity.this,
-                                //    "is connected="+connected,
-                              //      Toast.LENGTH_SHORT).show();
+                            updatePost(mPostKey, userId, user.username, title, body);
                         }
 
                         // Finish this Activity, back to the stream
@@ -372,11 +425,10 @@ public class NewPost2Activity extends BaseActivity  implements OnMapReadyCallbac
     }
 
     // [START write_fan_out]
-    protected void writeNewPost(String userId, String username, String title,
-                                String body) {
+    protected void updatePost(String key,String userId, String username, String title, String body) {
         // Create new post at /user-posts/$userid/$postid and at
         // /posts/$postid simultaneously
-        String key = mDatabase.child("posts").push().getKey();
+        //String key = mDatabase.child("posts").push().getKey();
         double lat= Double.parseDouble(mLat.getText().toString());
         double lang= Double.parseDouble(mLang.getText().toString());
         Post post = new Post(userId, username, title,

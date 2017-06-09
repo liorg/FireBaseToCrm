@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.malamteam.firebasetocrm.NewPost2Activity">
+    tools:context="com.malamteam.firebasetocrm.UpdatePost2Activity">
 
     <EditText
-        android:id="@+id/field_title2"
+        android:id="@+id/field_titleu2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
@@ -17,31 +17,31 @@
         android:maxLines="1" />
 
     <EditText
-        android:id="@+id/field_lat2"
+        android:id="@+id/field_latu2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="5dip"
         android:layout_marginLeft="16dp"
-        android:layout_below="@+id/field_title2"
+        android:layout_below="@+id/field_titleu2"
         android:layout_alignParentLeft="true"
         android:hint="lat"
         android:maxLines="1" />
     <EditText
-        android:id="@+id/field_lang2"
+        android:id="@+id/field_langu2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="5dip"
         android:layout_marginRight="16dp"
-        android:layout_below="@+id/field_title2"
-        android:layout_toRightOf="@+id/field_lat2"
+        android:layout_below="@+id/field_titleu2"
+        android:layout_toRightOf="@+id/field_latu2"
         android:gravity="right"
         android:hint="lang"
         android:maxLines="1" />
     <EditText
-        android:id="@+id/field_body2"
+        android:id="@+id/field_bodyu2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/field_lat2"
+        android:layout_below="@+id/field_latu2"
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
@@ -57,8 +57,8 @@
         xmlns:map="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/map2"
-        android:layout_below="@+id/field_body2"
+        android:id="@+id/mapu2"
+        android:layout_below="@+id/field_bodyu2"
         tools:context=".NewPost2Activity"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
@@ -66,7 +66,7 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"/>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_submit_post2"
+        android:id="@+id/fab_submit_postu2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
