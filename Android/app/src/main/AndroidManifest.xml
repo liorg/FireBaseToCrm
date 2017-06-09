@@ -45,6 +45,9 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".PostDetailActivity" />
         <activity android:name=".UpdatePost2Activity" />
+        <activity android:name=".UpdatePostAndImage2Activity" />
+
+
         <activity android:name=".SignInActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

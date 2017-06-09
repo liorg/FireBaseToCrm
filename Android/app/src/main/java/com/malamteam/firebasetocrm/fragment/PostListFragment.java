@@ -22,6 +22,7 @@ import com.google.firebase.database.Transaction;
 import com.malamteam.firebasetocrm.PostDetailActivity;
 import com.malamteam.firebasetocrm.R;
 import com.malamteam.firebasetocrm.UpdatePost2Activity;
+import com.malamteam.firebasetocrm.UpdatePostAndImage2Activity;
 import com.malamteam.firebasetocrm.models.Post;
 import com.malamteam.firebasetocrm.viewholder.PostViewHolder;
 
@@ -79,8 +80,8 @@ public abstract class PostListFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         // Launch PostDetailActivity
-                        Intent intent = new Intent(getActivity(), UpdatePost2Activity.class);
-                        intent.putExtra(UpdatePost2Activity.EXTRA_POST_KEY, postKey);
+                        Intent intent = new Intent(getActivity(), UpdatePostAndImage2Activity.class);
+                        intent.putExtra(UpdatePostAndImage2Activity.EXTRA_POST_KEY, postKey);
                         startActivity(intent);
                     }
                 });

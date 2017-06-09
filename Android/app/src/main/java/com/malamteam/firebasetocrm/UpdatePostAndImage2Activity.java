@@ -1,11 +1,14 @@
 package com.malamteam.firebasetocrm;
 
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
+
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+//import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -23,7 +26,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -39,7 +41,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UpdatePost2Activity extends BaseActivity  implements OnMapReadyCallback,
+public class UpdatePostAndImage2Activity extends BaseActivity  implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
@@ -56,7 +58,7 @@ public class UpdatePost2Activity extends BaseActivity  implements OnMapReadyCall
     private EditText mLat;
     private EditText mLang;
 
-    private FloatingActionButton mSubmitButton;
+  //  private FloatingActionButton mSubmitButton;
     GoogleMap mGoogleMap;
     SupportMapFragment mapFrag;
     LocationRequest mLocationRequest;
@@ -65,10 +67,17 @@ public class UpdatePost2Activity extends BaseActivity  implements OnMapReadyCall
     Marker mCurrLocationMarker;
     private DatabaseReference mPostReference;
     private ValueEventListener mPostListener;
+
+    FloatingActionMenu materialDesignFAM;
+    FloatingActionButton floatingActionButton1, floatingActionButton2, floatingActionButton3;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //http://www.viralandroid.com/2016/02/android-floating-action-menu-example.html
+
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_update_post2);
+        setContentView(R.layout.activity_updateimage_post2);
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
         // [START initialize_database_ref]
@@ -80,9 +89,11 @@ public class UpdatePost2Activity extends BaseActivity  implements OnMapReadyCall
         mLat = (EditText) findViewById(R.id.field_latu2);
         mLang = (EditText) findViewById(R.id.field_langu2);
 
-        mSubmitButton = (FloatingActionButton) findViewById(R.id.fab_submit_postu2);
+        materialDesignFAM = (FloatingActionMenu) findViewById(R.id.material_design_android_floating_action_menu);
+        floatingActionButton1 = (FloatingActionButton) findViewById(R.id.material_design_floating_action_menu_item2);
+        floatingActionButton2 = (FloatingActionButton) findViewById(R.id.material_design_floating_action_menu_item3);
 
-        mSubmitButton.setOnClickListener(new View.OnClickListener() {
+        floatingActionButton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 submitPost();
@@ -145,7 +156,7 @@ public class UpdatePost2Activity extends BaseActivity  implements OnMapReadyCall
                 // Getting Post failed, log a message
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
                 // [START_EXCLUDE]
-                Toast.makeText(UpdatePost2Activity.this, "Failed to load post.",
+                Toast.makeText(UpdatePostAndImage2Activity.this, "Failed to load post.",
                         Toast.LENGTH_SHORT).show();
                 // [END_EXCLUDE]
             }
@@ -280,7 +291,7 @@ public class UpdatePost2Activity extends BaseActivity  implements OnMapReadyCall
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 //Prompt the user once explanation has been shown
-                                ActivityCompat.requestPermissions(UpdatePost2Activity.this,
+                                ActivityCompat.requestPermissions(UpdatePostAndImage2Activity.this,
                                         new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                                         MY_PERMISSIONS_REQUEST_LOCATION );
                             }
@@ -367,7 +378,7 @@ public class UpdatePost2Activity extends BaseActivity  implements OnMapReadyCall
                         if (user == null) {
                             // User is null, error out
                             Log.e(TAG, "User " + userId + " is unexpectedly null");
-                            Toast.makeText(UpdatePost2Activity.this,
+                            Toast.makeText(UpdatePostAndImage2Activity.this,
                                     "Error: could not fetch user.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
@@ -396,9 +407,9 @@ public class UpdatePost2Activity extends BaseActivity  implements OnMapReadyCall
         mTitleField.setEnabled(enabled);
         mBodyField.setEnabled(enabled);
         if (enabled) {
-            mSubmitButton.setVisibility(View.VISIBLE);
+            materialDesignFAM.setVisibility(View.VISIBLE);
         } else {
-            mSubmitButton.setVisibility(View.GONE);
+            materialDesignFAM.setVisibility(View.GONE);
         }
     }
 
