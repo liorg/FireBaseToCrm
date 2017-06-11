@@ -28,15 +28,18 @@ namespace ConsoleTest
             /*
            
             */
-            var token = "AI..";
+            var token = "AI...";
 
             // specify your app’s client key when creating the auth provider
             var ap = new FirebaseAuthProvider(new FirebaseConfig(token));
 
-           // var result3=ap.CreateUserWithEmailAndPasswordAsync("xxx", "ccc").Result;
-           
-            // sign in with OAuth. You can also sign in anonymously
-            var auth = ap.SignInWithEmailAndPasswordAsync("lior_gr@...", "...").Result;
+            // var result3=ap.CreateUserWithEmailAndPasswordAsync("xxx", "ccc").Result;
+            // var result3 = ap.CreateUserWithEmailAndPasswordAsync("xxx", "ccc").Result;
+           // FirebaseAuthLink rr =  ap.SignInWithEmailAndPasswordAsync("", "").Result;
+      
+             // sign in with OAuth. You can also sign in anonymously
+             var auth = ap.SignInWithEmailAndPasswordAsync("noooooosh@gmail.com", "0549411222").Result;
+
             var ddd=auth.FirebaseToken;
             var ddddd=ap.GetUserAsync(ddd).Result;
 

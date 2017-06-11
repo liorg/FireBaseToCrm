@@ -37,6 +37,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.malamteam.firebasetocrm.models.Post;
 import com.malamteam.firebasetocrm.models.User;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -71,7 +72,7 @@ public class UpdatePostAndImage2Activity extends BaseActivity  implements OnMapR
     FloatingActionMenu materialDesignFAM;
     FloatingActionButton floatingActionButton1, floatingActionButton2, floatingActionButton3;
 
-
+    Post postEntity ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //http://www.viralandroid.com/2016/02/android-floating-action-menu-example.html
@@ -125,15 +126,15 @@ public class UpdatePostAndImage2Activity extends BaseActivity  implements OnMapR
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get Post object and use the values to update the UI
-                Post post = dataSnapshot.getValue(Post.class);
+                postEntity = dataSnapshot.getValue(Post.class);
               //  boolean connected = dataSnapshot.getValue(Boolean.class);
                 // [START_EXCLUDE]
                // mAuthorView.setText(post.author);
                 MarkerOptions markerOptions = new MarkerOptions();
-                mTitleField.setText(post.title);
-                mBodyField.setText(post.body);
-                mLat.setText(String.valueOf(post.latitude));
-                mLang.setText(String.valueOf(post.longitude));
+                mTitleField.setText(postEntity.title);
+                mBodyField.setText(postEntity.body);
+                mLat.setText(String.valueOf(postEntity.latitude));
+                mLang.setText(String.valueOf(postEntity.longitude));
                 double lat= Double.parseDouble(mLat.getText().toString());
                 double lang= Double.parseDouble(mLang.getText().toString());
                 LatLng point=new LatLng(lat,lang);
@@ -414,16 +415,25 @@ public class UpdatePostAndImage2Activity extends BaseActivity  implements OnMapR
     }
 
     // [START write_fan_out]
-    protected void updatePost(String key,String userId, String username, String title, String body) {
+    protected void updatePost(String key,String userId, String username,
+                              String title, String body) {
         // Create new post at /user-posts/$userid/$postid and at
         // /posts/$postid simultaneously
         //String key = mDatabase.child("posts").push().getKey();
+        SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+
         double lat= Double.parseDouble(mLat.getText().toString());
         double lang= Double.parseDouble(mLang.getText().toString());
-        Post post = new Post(userId, username, title,
-                body,lat,lang,new Date(),new Date(),new Date());
-        Map<String, Object> postValues = post.toMap2();
-
+       // Post post = new Post(userId, username, title,
+        //        body,lat,lang,new Date(),new Date(),new Date());
+        //Map<String, Object> postValues = post.toMap2();
+        postEntity.title=title;
+        postEntity.body=body;
+        postEntity.latitude=lat;
+        postEntity.longitude=lang;
+        postEntity.updateOnCrm=false;
+        postEntity.dateModified=dt.format(new Date());
+        Map<String, Object> postValues = postEntity.toMap2();
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/posts/" + key, postValues);
         childUpdates.put("/user-posts/" + userId + "/" + key, postValues);

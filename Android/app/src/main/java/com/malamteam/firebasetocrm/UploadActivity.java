@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +27,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+//import com.squareup.okhttp.Callback;
+//import com.squareup.okhttp.Callback;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
 
 import java.util.Locale;
 public class UploadActivity extends AppCompatActivity implements View.OnClickListener {
@@ -239,9 +245,17 @@ public class UploadActivity extends AppCompatActivity implements View.OnClickLis
             ((TextView) findViewById(R.id.picture_download_uri))
                     .setText(mDownloadUrl.toString());
             findViewById(R.id.layout_download).setVisibility(View.VISIBLE);
+            final ImageView imageView= (ImageView) findViewById(R.id.firebase_logo);
+            Picasso.with(this).load(mDownloadUrl.toString()).into(imageView);
+            //final Context cc=this;
+
+
         } else {
             ((TextView) findViewById(R.id.picture_download_uri))
                     .setText(null);
+
+
+
             findViewById(R.id.layout_download).setVisibility(View.GONE);
         }
     }
