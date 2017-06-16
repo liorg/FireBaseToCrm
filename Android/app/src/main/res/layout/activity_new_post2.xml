@@ -4,8 +4,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.malamteam.firebasetocrm.NewPost2Activity">
-
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:map="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_weight="2"
+        android:id="@+id/map2"
+        android:layout_marginTop="16dp"
+        tools:context=".NewPost2Activity"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="10dp"
+        android:name="com.google.android.gms.maps.SupportMapFragment"/>
     <EditText
+        android:layout_below="@+id/map2"
         android:id="@+id/field_title2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -52,18 +65,7 @@
         android:maxLines="10"
         android:scrollHorizontally="false" />
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        xmlns:map="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/map2"
-        android:layout_below="@+id/field_body2"
-        tools:context=".NewPost2Activity"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="45dp"
-        android:name="com.google.android.gms.maps.SupportMapFragment"/>
+
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_submit_post2"
