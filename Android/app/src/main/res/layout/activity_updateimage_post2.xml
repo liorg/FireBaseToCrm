@@ -78,7 +78,12 @@
         android:layout_margin="16dp"
         android:src="@drawable/ic_navigation_check_24"/-->
 
-
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/field_bodyu2"
+        tools:listitem="@layout/item_resource" />
     <com.github.clans.fab.FloatingActionMenu
         android:id="@+id/material_design_android_floating_action_menu"
         android:layout_width="wrap_content"

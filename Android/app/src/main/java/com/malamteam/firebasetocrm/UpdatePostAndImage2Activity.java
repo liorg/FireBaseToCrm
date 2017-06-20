@@ -3,6 +3,7 @@ package com.malamteam.firebasetocrm;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,10 +13,15 @@ import android.os.Bundle;
 //import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -30,18 +36,25 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.malamteam.firebasetocrm.models.Comment;
 import com.malamteam.firebasetocrm.models.Post;
+import com.malamteam.firebasetocrm.models.ResourceFile;
 import com.malamteam.firebasetocrm.models.User;
+import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import android.support.v7.widget.RecyclerView;
 
 public class UpdatePostAndImage2Activity extends BaseActivity  implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -72,6 +85,9 @@ public class UpdatePostAndImage2Activity extends BaseActivity  implements OnMapR
 
     FloatingActionMenu materialDesignFAM;
     FloatingActionButton floatingActionButton1, floatingActionButton2, floatingActionButton3;
+    private RecyclerView mCommentsRecycler;
+    private DatabaseReference mCommentsReference;
+    private ResourceAdapter mAdapter;
 
     Post postEntity ;
     @Override
@@ -109,7 +125,7 @@ public class UpdatePostAndImage2Activity extends BaseActivity  implements OnMapR
 
             }
         });
-
+        mCommentsRecycler = (RecyclerView) findViewById(R.id.recycler_image);
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapu2);
         mapFrag.getMapAsync(this);
         mPostKey = getIntent().getStringExtra(EXTRA_POST_KEY);
@@ -122,6 +138,9 @@ public class UpdatePostAndImage2Activity extends BaseActivity  implements OnMapR
                 .child("posts").child(mPostKey);
 
         mPostReference.keepSynced(true);
+        mCommentsReference =mPostReference.child("resources");
+
+        mCommentsRecycler.setLayoutManager(new LinearLayoutManager(this));
     //    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -177,8 +196,8 @@ public class UpdatePostAndImage2Activity extends BaseActivity  implements OnMapR
         mPostListener = postListener;
 
         // Listen for comments
-     //   mAdapter = new PostDetailActivity.CommentAdapter(this, mCommentsReference);
-     //   mCommentsRecycler.setAdapter(mAdapter);
+       mAdapter = new ResourceAdapter(this, mCommentsReference);
+       mCommentsRecycler.setAdapter(mAdapter);
     }
 
     @Override
@@ -190,7 +209,8 @@ public class UpdatePostAndImage2Activity extends BaseActivity  implements OnMapR
             mPostReference.removeEventListener(mPostListener);
         }
 
-
+        // Clean up comments listener
+        mAdapter.cleanupListener();
     }
     @Override
     public void onPause() {
@@ -455,5 +475,150 @@ public class UpdatePostAndImage2Activity extends BaseActivity  implements OnMapR
 
         mDatabase.updateChildren(childUpdates);
     }
+    private static class ResourceViewHolder extends RecyclerView.ViewHolder {
 
+        public TextView authorView;
+        public TextView bodyView;
+        public ImageView imageView;//= (ImageView) findViewById(R.id.firebase_logo);
+        public ResourceViewHolder(View itemView) {
+            super(itemView);
+
+            authorView = (TextView) itemView.findViewById(R.id.comment_author);
+            bodyView = (TextView) itemView.findViewById(R.id.comment_body);
+            imageView = (ImageView) itemView.findViewById(R.id.comment_photo);
+        }
+    }
+
+    private static class ResourceAdapter extends RecyclerView.Adapter<UpdatePostAndImage2Activity.ResourceViewHolder> {
+
+        private Context mContext;
+        private DatabaseReference mDatabaseReference;
+        private ChildEventListener mChildEventListener;
+
+        private List<String> mCommentIds = new ArrayList<>();
+        private List<ResourceFile> mComments = new ArrayList<>();
+
+        public ResourceAdapter(final Context context, DatabaseReference ref) {
+            mContext = context;
+            mDatabaseReference = ref;
+
+            // Create child event listener
+            // [START child_event_listener_recycler]
+            ChildEventListener childEventListener = new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
+                    Log.d(TAG, "onChildAdded:" + dataSnapshot.getKey());
+
+                    // A new comment has been added, add it to the displayed list
+                    ResourceFile comment = dataSnapshot.getValue(ResourceFile.class);
+
+                    // [START_EXCLUDE]
+                    // Update RecyclerView
+                    mCommentIds.add(dataSnapshot.getKey());
+                    mComments.add(comment);
+                    notifyItemInserted(mComments.size() - 1);
+                    // [END_EXCLUDE]
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
+                    Log.d(TAG, "onChildChanged:" + dataSnapshot.getKey());
+
+                    // A comment has changed, use the key to determine if we are displaying this
+                    // comment and if so displayed the changed comment.
+                    ResourceFile newComment = dataSnapshot.getValue(ResourceFile.class);
+                    String commentKey = dataSnapshot.getKey();
+
+                    // [START_EXCLUDE]
+                    int commentIndex = mCommentIds.indexOf(commentKey);
+                    if (commentIndex > -1) {
+                        // Replace with the new data
+                        mComments.set(commentIndex, newComment);
+
+                        // Update the RecyclerView
+                        notifyItemChanged(commentIndex);
+                    } else {
+                        Log.w(TAG, "onChildChanged:unknown_child:" + commentKey);
+                    }
+                    // [END_EXCLUDE]
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+                    Log.d(TAG, "onChildRemoved:" + dataSnapshot.getKey());
+
+                    // A comment has changed, use the key to determine if we are displaying this
+                    // comment and if so remove it.
+                    String commentKey = dataSnapshot.getKey();
+
+                    // [START_EXCLUDE]
+                    int commentIndex = mCommentIds.indexOf(commentKey);
+                    if (commentIndex > -1) {
+                        // Remove data from the list
+                        mCommentIds.remove(commentIndex);
+                        mComments.remove(commentIndex);
+
+                        // Update the RecyclerView
+                        notifyItemRemoved(commentIndex);
+                    } else {
+                       Log.w(TAG, "onChildRemoved::" + commentKey);
+                    }
+                    // [END_EXCLUDE]
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
+                 //   Log.d(TAG, "onChildMoved:" + dataSnapshot.getKey());
+
+                    // A comment has changed position, use the key to determine if we are
+                    // displaying this comment and if so move it.
+                    Comment movedComment = dataSnapshot.getValue(Comment.class);
+                    String commentKey = dataSnapshot.getKey();
+
+                    // ...
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                  //  Log.w(TAG, "postComments:onCancelled", databaseError.toException());
+                    Toast.makeText(mContext, "Failed to load comments.",
+                            Toast.LENGTH_SHORT).show();
+                }
+            };
+            ref.addChildEventListener(childEventListener);
+            // [END child_event_listener_recycler]
+
+            // Store reference to listener so it can be removed on app stop
+            mChildEventListener = childEventListener;
+        }
+
+        @Override
+        public UpdatePostAndImage2Activity.ResourceViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(mContext);
+            View view = inflater.inflate(R.layout.item_comment, parent, false);
+            return new UpdatePostAndImage2Activity.ResourceViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(UpdatePostAndImage2Activity.ResourceViewHolder holder, int position) {
+            ResourceFile comment = mComments.get(position);
+            holder.authorView.setText(comment.url);
+            holder.bodyView.setText(comment.uid);
+
+
+            Picasso.with(mContext).load(comment.url).into(holder.imageView);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mComments.size();
+        }
+
+        public void cleanupListener() {
+            if (mChildEventListener != null) {
+                mDatabaseReference.removeEventListener(mChildEventListener);
+            }
+        }
+
+    }
 }
