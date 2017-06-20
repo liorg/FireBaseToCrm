@@ -14,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,39 +23,59 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.malamteam.firebasetocrm.models.User;
 import com.squareup.picasso.Picasso;
+import com.malamteam.firebasetocrm.models.ResourceFile;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
-//import com.squareup.okhttp.Callback;
-//import com.squareup.okhttp.Callback;
 
 public class UploadResource2Activity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String TAG = "Storage#MainActivity";
+    private static final String TAG = "UploadResource2Activity";
 
+    private static final String REQUIRED = "Required";
+    public static final String EXTRA_POST_KEY = "post_key";
     private static final int RC_TAKE_PICTURE = 101;
-
+    private DatabaseReference mDatabase;
     private static final String KEY_FILE_URI = "key_file_uri";
     private static final String KEY_DOWNLOAD_URL = "key_download_url";
-
+    private DatabaseReference mPostReference;
     private BroadcastReceiver mBroadcastReceiver;
     private ProgressDialog mProgressDialog;
     private FirebaseAuth mAuth;
-
+    private String mPostKey;
     private Uri mDownloadUrl = null;
     private Uri mFileUri = null;
+    FloatingActionMenu materialDesignFAM;
 
+    FloatingActionButton floatingActionButton1, floatingActionButton2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.upload_image);
-
+        setContentView(R.layout.upload2_resource);
+        // Get post key from intent
+        mPostKey = getIntent().getStringExtra(EXTRA_POST_KEY);
+        if (mPostKey == null) {
+            throw new IllegalArgumentException("Must pass EXTRA_POST_KEY");
+        }
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mPostReference = FirebaseDatabase.getInstance().getReference()
+                .child("posts").child(mPostKey);
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
@@ -63,6 +84,24 @@ public class UploadResource2Activity extends AppCompatActivity implements View.O
         findViewById(R.id.button_sign_in).setOnClickListener(this);
         findViewById(R.id.button_download).setOnClickListener(this);
 
+        materialDesignFAM = (FloatingActionMenu) findViewById(R.id.material_design_android_floating_action_actions);
+        floatingActionButton1 = (FloatingActionButton) findViewById(R.id.material_design_floating_action_menu_commit);
+        floatingActionButton2 = (FloatingActionButton) findViewById(R.id.material_design_floating_action_menu_cancel);
+
+        floatingActionButton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //BACK
+
+            }
+        });
+        floatingActionButton1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                submitPost();
+
+            }
+        });
         // Restore instance state
         if (savedInstanceState != null) {
             mFileUri = savedInstanceState.getParcelable(KEY_FILE_URI);
@@ -229,7 +268,16 @@ public class UploadResource2Activity extends AppCompatActivity implements View.O
 
         updateUI(mAuth.getCurrentUser());
     }
-
+    protected void submitPost() {
+        Toast.makeText(this, "Posting...", Toast.LENGTH_SHORT).show();
+        String key = mPostReference.child("resources").push().getKey();
+        ResourceFile  res=new ResourceFile(key ,mDownloadUrl.toString(),"",mPostKey);
+        Map<String, Object> childUpdates = new HashMap<>();
+        Map<String, Object> postValues = res.toMap();
+        childUpdates.put("/resources/"+key, postValues);
+        mPostReference.updateChildren(childUpdates);
+        finish();
+    }
     private void updateUI(FirebaseUser user) {
         // Signed in or Signed out
         if (user != null) {
@@ -253,8 +301,6 @@ public class UploadResource2Activity extends AppCompatActivity implements View.O
         } else {
             ((TextView) findViewById(R.id.picture_download_uri))
                     .setText(null);
-
-
 
             findViewById(R.id.layout_download).setVisibility(View.GONE);
         }

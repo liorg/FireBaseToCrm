@@ -4,6 +4,7 @@ import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
@@ -46,7 +47,7 @@ public class UpdatePostAndImage2Activity extends BaseActivity  implements OnMapR
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
-    private static final String TAG = "UpdatePostActivity";
+    private static final String TAG = "UpdatePostAndImage2Activity";
     private static final String REQUIRED = "Required";
     public static final String EXTRA_POST_KEY = "post_key";
     // [START declare_database_ref]
@@ -93,6 +94,13 @@ public class UpdatePostAndImage2Activity extends BaseActivity  implements OnMapR
         materialDesignFAM = (FloatingActionMenu) findViewById(R.id.material_design_android_floating_action_menu);
         floatingActionButton1 = (FloatingActionButton) findViewById(R.id.material_design_floating_action_menu_item2);
         floatingActionButton2 = (FloatingActionButton) findViewById(R.id.material_design_floating_action_menu_item3);
+        floatingActionButton1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                upload();
+
+            }
+        });
 
         floatingActionButton2.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -402,6 +410,13 @@ public class UpdatePostAndImage2Activity extends BaseActivity  implements OnMapR
                     }
                 });
         // [END single_value_read]
+    }
+
+    protected void upload(){
+
+        Intent intent = new Intent(this, UploadResource2Activity.class);
+        intent.putExtra(UploadResource2Activity.EXTRA_POST_KEY, mPostKey);
+        startActivity(intent);
     }
 
     protected void setEditingEnabled(boolean enabled) {
