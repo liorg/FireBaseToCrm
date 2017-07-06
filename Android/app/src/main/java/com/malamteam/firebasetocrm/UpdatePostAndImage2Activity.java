@@ -483,8 +483,8 @@ public class UpdatePostAndImage2Activity extends BaseActivity  implements OnMapR
         public ResourceViewHolder(View itemView) {
             super(itemView);
 
-            authorView = (TextView) itemView.findViewById(R.id.comment_author);
-            bodyView = (TextView) itemView.findViewById(R.id.comment_body);
+           // authorView = (TextView) itemView.findViewById(R.id.comment_author);
+            //bodyView = (TextView) itemView.findViewById(R.id.comment_body);
             imageView = (ImageView) itemView.findViewById(R.id.comment_photo);
         }
     }
@@ -602,8 +602,8 @@ public class UpdatePostAndImage2Activity extends BaseActivity  implements OnMapR
         @Override
         public void onBindViewHolder(UpdatePostAndImage2Activity.ResourceViewHolder holder, int position) {
             ResourceFile comment = mComments.get(position);
-            holder.authorView.setText(comment.url);
-            holder.bodyView.setText(comment.uid);
+           // holder.authorView.setText(comment.url);
+            //holder.bodyView.setText(comment.uid);
 
 
             Picasso.with(mContext).load(comment.url).into(holder.imageView);
