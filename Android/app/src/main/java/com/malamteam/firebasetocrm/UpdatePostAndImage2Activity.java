@@ -17,6 +17,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -36,6 +38,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -221,7 +224,42 @@ public class UpdatePostAndImage2Activity extends BaseActivity  implements OnMapR
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         }
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.edit_post, menu);
+        return true;
 
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        //int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        // if (id == R.id.action_settings) {
+        //     return true;
+        //   }
+
+        // return super.onOptionsItemSelected(item);
+        int i = item.getItemId();
+
+        if(i==R.id.action_shows_resources) {
+            Intent intent = new Intent(this, ShowResourcesActivity.class);
+            intent.putExtra(UpdatePostAndImage2Activity.EXTRA_POST_KEY, mPostKey);
+            startActivity(intent);
+            finish();
+            return true;
+        }
+
+        else {
+            return super.onOptionsItemSelected(item);
+        }
+    }
     @Override
     public void onMapReady(GoogleMap googleMap)
     {
@@ -470,7 +508,14 @@ public class UpdatePostAndImage2Activity extends BaseActivity  implements OnMapR
         postEntity.dateModified=dt.format(new Date());
         Map<String, Object> postValues = postEntity.toMap2();
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/posts/" + key, postValues);
+     //   childUpdates.put("/posts/" + key, postValues);
+        childUpdates.put("/posts/" + key+"/title", postEntity.title);
+        childUpdates.put("/posts/" + key+"/body", postEntity.body);
+        childUpdates.put("/posts/" + key+"/latitude", postEntity.latitude);
+        childUpdates.put("/posts/" + key+"/longitude", postEntity.longitude);
+        childUpdates.put("/posts/" + key+"/updateOnCrm", postEntity.updateOnCrm);
+        childUpdates.put("/posts/" + key+"/dateModified", postEntity.dateModified);
+
         childUpdates.put("/user-posts/" + userId + "/" + key, postValues);
 
         mDatabase.updateChildren(childUpdates);

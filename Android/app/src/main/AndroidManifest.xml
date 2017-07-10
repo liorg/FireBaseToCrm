@@ -38,7 +38,7 @@
         <activity android:name=".UploadActivity" />
         <activity android:name=".UploadResource2Activity" />
 
-
+        <activity android:name=".UpdatePostAndImage2Activity" />
         <activity android:name=".NewPostActivity" />
         <activity android:name=".MapTestActivity" />
         <activity android:name=".MapLocationActivity" />
@@ -48,7 +48,7 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".PostDetailActivity" />
         <activity android:name=".UpdatePost2Activity" />
-        <activity android:name=".UpdatePostAndImage2Activity" />
+        <activity android:name=".ShowResourcesActivity" />
 
 
         <activity android:name=".SignInActivity">
