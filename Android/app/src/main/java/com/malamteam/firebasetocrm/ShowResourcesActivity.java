@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -101,7 +102,7 @@ public class ShowResourcesActivity extends BaseActivity
         mCommentsReference =mPostReference.child("resources");
 
         mCommentsRecycler.setLayoutManager(new LinearLayoutManager(this));
-    //    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     public void onStart() {
@@ -114,14 +115,14 @@ public class ShowResourcesActivity extends BaseActivity
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get Post object and use the values to update the UI
                 postEntity = dataSnapshot.getValue(Post.class);
-              //  boolean connected = dataSnapshot.getValue(Boolean.class);
+                //  boolean connected = dataSnapshot.getValue(Boolean.class);
                 // [START_EXCLUDE]
-               // mAuthorView.setText(post.author);
+                // mAuthorView.setText(post.author);
                 MarkerOptions markerOptions = new MarkerOptions();
 
-               // Toast.makeText(UpdatePost2Activity.this,
-                 //       "is connected="+connected,
-                   //     Toast.LENGTH_SHORT).show();
+                // Toast.makeText(UpdatePost2Activity.this,
+                //       "is connected="+connected,
+                //     Toast.LENGTH_SHORT).show();
                 // [END_EXCLUDE]
             }
 
@@ -142,8 +143,8 @@ public class ShowResourcesActivity extends BaseActivity
         mPostListener = postListener;
 
         // Listen for comments
-       mAdapter = new ResourceAdapter(this, mCommentsReference);
-       mCommentsRecycler.setAdapter(mAdapter);
+        mAdapter = new ResourceAdapter(this, mCommentsReference);
+        mCommentsRecycler.setAdapter(mAdapter);
     }
 
     @Override
@@ -171,11 +172,9 @@ public class ShowResourcesActivity extends BaseActivity
         public ImageView imageView;//= (ImageView) findViewById(R.id.firebase_logo);
         public ResourceViewHolder(View itemView) {
             super(itemView);
-
-           // authorView = (TextView) itemView.findViewById(R.id.comment_author);
-            //bodyView = (TextView) itemView.findViewById(R.id.comment_body);
-            imageView = (ImageView) itemView.findViewById(R.id.comment_photo);
+             imageView = (ImageView) itemView.findViewById(R.id.comment2_photo);
         }
+
     }
 
     private static class ResourceAdapter extends RecyclerView.Adapter<ShowResourcesActivity.ResourceViewHolder> {
@@ -186,6 +185,7 @@ public class ShowResourcesActivity extends BaseActivity
 
         private List<String> mCommentIds = new ArrayList<>();
         private List<ResourceFile> mComments = new ArrayList<>();
+
 
         public ResourceAdapter(final Context context, DatabaseReference ref) {
             mContext = context;
@@ -250,14 +250,14 @@ public class ShowResourcesActivity extends BaseActivity
                         // Update the RecyclerView
                         notifyItemRemoved(commentIndex);
                     } else {
-                       Log.w(TAG, "onChildRemoved::" + commentKey);
+                        Log.w(TAG, "onChildRemoved::" + commentKey);
                     }
                     // [END_EXCLUDE]
                 }
 
                 @Override
                 public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
-                 //   Log.d(TAG, "onChildMoved:" + dataSnapshot.getKey());
+                    //   Log.d(TAG, "onChildMoved:" + dataSnapshot.getKey());
 
                     // A comment has changed position, use the key to determine if we are
                     // displaying this comment and if so move it.
@@ -269,7 +269,7 @@ public class ShowResourcesActivity extends BaseActivity
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-                  //  Log.w(TAG, "postComments:onCancelled", databaseError.toException());
+                    //  Log.w(TAG, "postComments:onCancelled", databaseError.toException());
                     Toast.makeText(mContext, "Failed to load comments.",
                             Toast.LENGTH_SHORT).show();
                 }
@@ -284,18 +284,19 @@ public class ShowResourcesActivity extends BaseActivity
         @Override
         public ShowResourcesActivity.ResourceViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(mContext);
-            View view = inflater.inflate(R.layout.item_comment, parent, false);
+            View view = inflater.inflate(R.layout.card_resource, parent, false);
             return new ShowResourcesActivity.ResourceViewHolder(view);
         }
+
+
 
         @Override
         public void onBindViewHolder(ShowResourcesActivity.ResourceViewHolder holder, int position) {
             ResourceFile comment = mComments.get(position);
-           // holder.authorView.setText(comment.url);
+            // holder.authorView.setText(comment.url);
             //holder.bodyView.setText(comment.uid);
-
-
             Picasso.with(mContext).load(comment.url).into(holder.imageView);
+            //Picasso.with(mContext).load(comment.url).resize(240, 120).into(holder.imageView);
         }
 
         @Override

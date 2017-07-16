@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 xmlns:tools="http://schemas.android.com/tools"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent"
+                                                 android:fitsSystemWindows="true"
     tools:context="com.malamteam.firebasetocrm.ShowResourcesActivity">
 
 
@@ -13,16 +13,13 @@
 
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:clipChildren="true"
-        android:focusable="true"
+
+
         android:visibility="visible"
 
-        android:clipToPadding="false"
-        android:padding="5dp"
+
         android:scrollbars="vertical"
-        tools:listitem="@layout/item_resource" />
+        tools:listitem="@layout/card_resource" />
 
 
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

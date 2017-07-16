@@ -19,18 +19,22 @@ public class MyApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
         if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED))
             cacheDir = this.getExternalCacheDir();
         else
             cacheDir = this.getCacheDir();
         //https://www.youtube.com/watch?v=Et8njU58OTs
+
         Picasso.Builder builder = new Picasso.Builder(this);
        builder.downloader(new OkHttpDownloader(cacheDir,Integer.MAX_VALUE));
         Picasso built=builder.build();
        built.setIndicatorsEnabled(false);
        built.setLoggingEnabled(true);
         Picasso.setSingletonInstance(built);
+
     }
 
 
