@@ -28,7 +28,7 @@ namespace ConsoleTest
             /*
            
             */
-            var token = "AI...";
+            var token = "AIzaSyBSD5vZpqL2Q0hV-CDwX6T7oYKTbEernjQ";
 
             // specify your app’s client key when creating the auth provider
             var ap = new FirebaseAuthProvider(new FirebaseConfig(token));
@@ -38,12 +38,13 @@ namespace ConsoleTest
            // FirebaseAuthLink rr =  ap.SignInWithEmailAndPasswordAsync("", "").Result;
       
              // sign in with OAuth. You can also sign in anonymously
-             var auth = ap.SignInWithEmailAndPasswordAsync("noooooosh@gmail.com", "0549411222").Result;
+             var auth = ap.SignInWithEmailAndPasswordAsync("noooooosh@gmail.com", "x").Result;
 
             var ddd=auth.FirebaseToken;
             var ddddd=ap.GetUserAsync(ddd).Result;
 
-           
+            Console.WriteLine("{0},{1}", ddddd.Email, ddddd.LastName);
+            Console.ReadLine();
 
             var firebase = new FirebaseClient(
                          "https://fir-tocrm.firebaseio.com",
