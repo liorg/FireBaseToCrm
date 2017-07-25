@@ -3,7 +3,7 @@ const path = require('path');
 var AssetsPlugin = require('assets-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-const sourcePath = path.join(__dirname, './Container');
+const sourcePath = path.join(__dirname, './Components');
 const staticsPath = path.join(__dirname, './');
 
 module.exports = function (env) {
@@ -58,7 +58,6 @@ module.exports = function (env) {
         context: sourcePath,
         entry: {
             js: './index.js',
-            jssimple: './simple.js',
             vendor: ['react']
         },
         output: {

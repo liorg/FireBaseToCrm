@@ -4,7 +4,7 @@ import React from 'react';
 
 import Contacts from 'containers/HelloMessage';
 
-import 'index.html';
+import './index.html';
 
 ReactDOM.render(
     <Contacts  name="Sara"> </Contacts>,

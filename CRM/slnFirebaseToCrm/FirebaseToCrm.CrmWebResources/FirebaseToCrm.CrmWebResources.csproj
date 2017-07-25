@@ -94,11 +94,16 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="email.html" />
+    <Content Include="new_firebase-logo.png" />
+    <Content Include="Components\index.html" />
+    <Content Include="new_main.css" />
     <Content Include="packages.config" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="package.json" />
+    <Content Include="firebase.json" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -108,7 +113,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Components\containers\HelloMessage\index.js" />
-    <Content Include="Components\index.html" />
     <Content Include="Components\index.js" />
     <Content Include="new_firebase.html" />
     <Content Include="Web.config" />
