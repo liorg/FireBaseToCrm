@@ -3,7 +3,7 @@ const path = require('path');
 var AssetsPlugin = require('assets-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-const sourcePath = path.join(__dirname, './Components');
+const sourcePath = path.join(__dirname, './src');
 const staticsPath = path.join(__dirname, './');
 
 module.exports = function (env) {
@@ -67,6 +67,7 @@ module.exports = function (env) {
         },
         module: {
             rules: [
+                { test: /\.(png|woff|woff2|eot|ttf|svg)$/, loader: 'url-loader?limit=100000' },
               {
                   test: /\.html$/,
                   exclude: /node_modules/,

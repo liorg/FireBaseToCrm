@@ -94,10 +94,11 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Components\containers\HelloMessage\index.js" />
+    <Content Include="Source\Components\Containers\actionTypes.js" />
+    <Content Include="Source\Components\Containers\HelloMessage\index.js" />
     <Content Include="email.html" />
     <Content Include="new_firebase-logo.png" />
-    <Content Include="Components\index.html" />
+    <Content Include="Source\index.html" />
     <Content Include="new_main.css" />
     <Content Include="packages.config" />
     <Content Include="ApplicationInsights.config">
@@ -106,6 +107,11 @@
     <Content Include="package.json" />
     <Content Include="firebase.json" />
     <Content Include=".babelrc" />
+    <Content Include="src\fonts\fontawesome-webfont.eot" />
+    <Content Include="src\fonts\fontawesome-webfont.ttf" />
+    <Content Include="src\fonts\fontawesome-webfont.woff" />
+    <Content Include="src\fonts\fontawesome-webfont.woff2" />
+    <Content Include="src\fonts\FontAwesome.otf" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -114,15 +120,34 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Components\index.js" />
+    <Content Include="Source\index.js" />
     <Content Include="new_firebase.html" />
+    <Content Include="src\App.js" />
+    <Content Include="src\authscreens\Login.js" />
+    <Content Include="src\authscreens\Recover.js" />
+    <Content Include="src\authscreens\Signup.js" />
+    <Content Include="src\css\bootstrap-social.css" />
+    <Content Include="src\css\font-awesome.css" />
+    <Content Include="src\css\index.css" />
+    <Content Include="src\Dashboard.js" />
+    <Content Include="src\firebase\Firebase.js" />
+    <Content Include="src\fonts\fontawesome-webfont.svg" />
+    <Content Include="src\Home.js" />
+    <Content Include="src\index.html" />
+    <Content Include="src\index.js" />
+    <Content Include="src\Navbar.js" />
+    <Content Include="src\Note.js" />
+    <Content Include="src\Notelist.js" />
+    <Content Include="src\utils\RequireAuth.js" />
     <Content Include="Web.config" />
     <Content Include="webpack.config.js" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Source\constants\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
