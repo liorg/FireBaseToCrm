@@ -14,7 +14,7 @@ module.exports = function (env) {
       new webpack.optimize.CommonsChunkPlugin({
           name: 'vendor',
           minChunks: Infinity,
-          filename: 'vendor.bundle.js'
+          filename: 'new_vendor.bundle.js'
       }),
       new webpack.DefinePlugin({
           'process.env': { NODE_ENV: JSON.stringify(nodeEnv) }
@@ -53,16 +53,17 @@ module.exports = function (env) {
     }
 
     return {
-        devtool:  'source-map',
-      // devtool: isProd ? 'source-map' : 'eval',
+        devtool: 'source-map',
+        // devtool: isProd ? 'source-map' : 'eval',
         context: sourcePath,
         entry: {
             js: './index.js',
+          
             vendor: ['react']
         },
         output: {
             path: staticsPath,
-            filename: '[name].bundle.js',
+            filename: 'new_[name].bundle.js',
         },
         module: {
             rules: [
@@ -79,7 +80,7 @@ module.exports = function (env) {
               {
                   // test: /\.css$/,
                   test: /(\.scss|\.css)$/,
-                //  exclude: /node_modules/,
+                  //  exclude: /node_modules/,
                   //use: [
                   //      'style-loader',
                   //      'css-loader?modules&importLoaders=1',
@@ -95,7 +96,7 @@ module.exports = function (env) {
                   //               }
                   //           }
                   //            ]
-                    //loader: ExtractTextPlugin.extract('style', 'css?sourceMap&modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass','sass')
+                  //loader: ExtractTextPlugin.extract('style', 'css?sourceMap&modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass','sass')
                   use: [
                     'style-loader',
                     'css-loader'
@@ -138,7 +139,7 @@ module.exports = function (env) {
         },
 
         devServer: {
-            contentBase: './ShovarDist',
+            contentBase: './',
             historyApiFallback: true,
             port: 3030,
             compress: isProd,
