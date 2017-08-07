@@ -1,0 +1,20 @@
+﻿    <!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+	<meta charset="utf-8" />
+</head>
+
+<body>
+<script>
+    alert(validate('a3631777'));
+    alert(validate('05063177771'));
+    function validate(m) {
+       //var re = /^([0-9]){9,10}$/;
+        var re = /^[0-9]{2,3}[0-9]{7}$/;
+
+        return re.test(m);
+    }
+</script>
+</body>
+</html>

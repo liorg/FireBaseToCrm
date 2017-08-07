@@ -20,11 +20,17 @@ namespace ConsoleTest
 
         public PostDetail Object { get; set; }
     }
-
+    public enum eDataType
+    {
+        open=1,close=2
+    }
     class Program
     {
         static void Main(string[] args) 
         {
+
+            eDataType dd = (eDataType)Enum.Parse(typeof(eDataType), "open");
+
             /*
            
             */

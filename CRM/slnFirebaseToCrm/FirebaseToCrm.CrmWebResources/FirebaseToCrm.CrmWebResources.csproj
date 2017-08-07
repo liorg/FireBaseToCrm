@@ -94,6 +94,9 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="src\ResourceItem.js" />
+    <Content Include="src\ResourceList.js" />
+    <Content Include="src\Postlist.js" />
     <Content Include="Source\Components\Containers\actionTypes.js" />
     <Content Include="Source\Components\Containers\HelloMessage\index.js" />
     <Content Include="email.html" />
@@ -107,6 +110,9 @@
     <Content Include="package.json" />
     <Content Include="firebase.json" />
     <Content Include=".babelrc" />
+    <Content Include="src\Post.js" />
+    <Content Include="src\PostDetail.js" />
+    <Content Include="src\Posts.js" />
     <Content Include="src\fonts\fontawesome-webfont.eot" />
     <Content Include="src\fonts\fontawesome-webfont.ttf" />
     <Content Include="src\fonts\fontawesome-webfont.woff" />
@@ -139,6 +145,7 @@
     <Content Include="src\Note.js" />
     <Content Include="src\Notelist.js" />
     <Content Include="src\utils\RequireAuth.js" />
+    <Content Include="test.html" />
     <Content Include="Web.config" />
     <Content Include="webpack.config.js" />
   </ItemGroup>

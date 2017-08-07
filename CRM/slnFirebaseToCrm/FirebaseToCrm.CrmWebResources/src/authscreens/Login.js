@@ -67,16 +67,7 @@ class Login extends Component {
         <h1>Login Screen</h1>
         <div className="col-md-4"></div>
            <div className="form-group col-md-4">
-            <a className="btn btn-block btn-social btn-facebook" onClick={this.handleFacebook}>
-              <span className="fa fa-facebook"></span>
-              Sign in with Facebook
-            </a>
-            <a className="btn btn-block btn-social btn-google" onClick={this.handleGoogle}>
-              <span className="fa fa-google"></span>
-              Sign in with Google
-            </a>
-          <br/>
-          <p className="text-center">------------- Or -------------</p>
+          
           <form onSubmit={this.handleSubmit}>
           	<input type="text" className="form-control" value={this.state.email} onChange={this.handleEmailChange} placeholder="Enter Email" />
           	<input type="password" className="form-control" value={this.state.password} onChange={this.handlePassChange} placeholder="Enter Password" /><br/>

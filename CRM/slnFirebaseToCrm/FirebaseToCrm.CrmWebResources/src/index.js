@@ -7,6 +7,8 @@ import Login from './authscreens/Login';
 import Signup from './authscreens/Signup';
 import Recover from './authscreens/Recover';
 import Dashboard from './Dashboard';
+import Posts from './Posts';
+import PostDetail from './PostDetail';
 import requireAuth from './utils/RequireAuth';
 import './css/index.css';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -19,7 +21,8 @@ render((
       <Route path="login" component={Login} />
       <Route path="signup" component={Signup} />
       <Route path="recover" component={Recover} />
-      <Route path="dashboard" component={Dashboard} onEnter={requireAuth} />
+      <Route path="p/:id" component={PostDetail} onEnter={requireAuth} />
+      <Route path="dashboard" component={Posts} onEnter={requireAuth} />
     </Route>
   </Router>
 ), document.getElementById('root'))
